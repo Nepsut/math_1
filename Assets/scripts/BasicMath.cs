@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using static UnityEditor.PlayerSettings;
 
 public class BasicMath : MonoBehaviour
 {
@@ -12,23 +13,32 @@ public class BasicMath : MonoBehaviour
 
     private Vector3 vec;
 
-    //rectagle
+    //rectagle _SCREEN SIZE_
     public GameObject rect;
-    //[Range(0.1f, 20f)]                        HOX FIXED!!
+    [Range(0.1f, 3840f)]                        
     public float width = 1920f;
-    //[Range(0.1f, 20f)]
+    [Range(0.1f, 2160f)]
     public float height = 1080f;
 
-    [Range(0f, 100f)]
-    public float widthPercentage = 60f;  //homework start?
-    [Range(0f, 100f)]
-    public float heightPercentage = 35f;  //homework start?
+    [Range(0f, 1f)]
+    public float widthPercentage = 0.6f;  //homework start?
+    [Range(0f, 1f)]
+    public float heightPercentage = 0.35f;  //homework start?
 
-    [Range(0f, 100f)]
-    public float positionPercentageX = 50f;  //homework start?
-    [Range(0f, 100f)]
-    public float positionPercentageY = 50f;  //homework start?
+    [Range(0f, 1f)]
+    public float positionPercentageX = 0.5f;  //homework start?
+    [Range(0f, 1f)]
+    public float positionPercentageY = 0.5f;  //homework start?
 
+
+    private float popUpX;
+    private float popUpY;
+
+    private float popUpWidth;
+    private float popUpHeight;
+
+    //private float testX = 1000f;
+    //private float testY = 600f;
 
     private void DrawVector(Vector3 pos, Vector3 vec, Color c, float thickness)
     {
@@ -56,6 +66,14 @@ public class BasicMath : MonoBehaviour
         DrawVector(pos, new Vector3(0, length, 0), Color.green, thickness);
     }
 
+    private void popUpDimensions()
+    {
+        popUpX = width * positionPercentageX;
+        popUpY = height * positionPercentageY;
+
+        popUpWidth = width * widthPercentage;
+        popUpHeight = height * heightPercentage;
+    }
     private void DrawPopUp()
     {
         //homework start?
@@ -63,25 +81,20 @@ public class BasicMath : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        vec = vectorTo.transform.position;  //endpoint of the targetA
-
         DrawAxes(Vector3.zero, axisLenght, 3f);
-
-        //circle
-        Handles.color = Color.white;
-        Handles.DrawWireDisc(Vector3.zero, Vector3.forward, 1.5f);
-
-        //line to object
-        DrawVector(Vector3.zero, vec, Color.black, 3f);
-        DrawAxes(vec, 1.0f, 3f);
 
         ////rectangle
         //vec = rect.transform.position;
-        //DrawRect(vec, width, height, Color.black, 3.0f);
+        //DrawRect(vec, testX, testY, Color.black, 3.0f);
         //DrawAxes(vec, 1.0f, 3f);
 
         //homework frame
         DrawRect(Vector3.zero, width, height, Color.black, 5f);
+
+        popUpDimensions();
+
+        Handles.color = Color.red;
+        Handles.DrawWireCube(new Vector3(popUpX,popUpY,0), new Vector3(popUpWidth, popUpHeight, 0));
 
     }
 }

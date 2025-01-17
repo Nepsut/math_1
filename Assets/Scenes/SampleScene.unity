@@ -147,7 +147,7 @@ Transform:
   m_GameObject: {fileID: 42717777}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.514, y: 3.469, z: 0}
+  m_LocalPosition: {x: 568, y: 254, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -402,12 +402,14 @@ MonoBehaviour:
   axisLenght: 3
   vectorTo: {fileID: 542888657}
   rect: {fileID: 42717777}
-  width: 1920
-  height: 1080
-  widthPercentage: 60
-  heightPercentage: 35
-  positionPercentageX: 50
-  positionPercentageY: 50
+  width: 1756
+  height: 1045
+  widthPercentage: 0.6
+  heightPercentage: 0.35
+  positionPercentageX: 0.5
+  positionPercentageY: 0.5
+  popUpX: 878
+  popUpY: 522.5
 --- !u!4 &1490170199
 Transform:
   m_ObjectHideFlags: 0

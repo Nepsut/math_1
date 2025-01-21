@@ -77,16 +77,13 @@ public class BasicMath : MonoBehaviour
     private void DrawPopUp()
     {
         //homework start?
+        //ended up using DrawWireCube() and couldn't figure out a generic method to do this
+        //using the same DrawRect() could've worked but I wanted to look into the wireCube
     }
 
     private void OnDrawGizmos()
     {
         DrawAxes(Vector3.zero, axisLenght, 3f);
-
-        ////rectangle
-        //vec = rect.transform.position;
-        //DrawRect(vec, testX, testY, Color.black, 3.0f);
-        //DrawAxes(vec, 1.0f, 3f);
 
         //homework frame
         DrawRect(Vector3.zero, width, height, Color.black, 5f);

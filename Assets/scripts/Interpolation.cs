@@ -18,6 +18,7 @@ public class Interpolation : MonoBehaviour
     private Vector3 posA = Vector3.zero;
     private Vector3 posB = Vector3.zero;
 
+
     private void DrawVector(Vector3 pos, Vector3 vec, Color c, float thickness)
     {
         Handles.color = c;

@@ -615,11 +615,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 907556198fa14e7448bfe19d7dbd6041, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 5
-  threshold: 37.6
+  radius: 4.14
+  threshold: 36
   targetObject: {fileID: 940112694}
   lookAtObject: {fileID: 599470222}
-  offPos: 1.24
+  offPos: 0.53
 --- !u!1 &1994597464
 GameObject:
   m_ObjectHideFlags: 0

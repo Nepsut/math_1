@@ -45,5 +45,26 @@ public class BezierPoint : MonoBehaviour
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(transform.position, 3.0f);
         }
-    } 
+    }
+
+    //for dragging the controls
+
+    [CustomEditor(typeof(BezierPoint))]
+    public class BezierPointEditor : Editor
+    {
+        private void OnSceneGUI()
+        {
+            
+
+            EditorGUI.BeginChangeCheck();
+
+            
+
+            if (EditorGUI.EndChangeCheck())
+            {
+               
+            }
+
+        }
+    }
 }

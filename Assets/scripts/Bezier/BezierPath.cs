@@ -6,6 +6,7 @@ using UnityEngine;
 public class BezierPath : MonoBehaviour
 {
     public GameObject[] points;
+    public bool connector = false;
 
     [Range(0f, 1f)]
     public float t = 0.0f;
@@ -43,35 +44,43 @@ public class BezierPath : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        if (points == null || points.Length < 2)
+        {
+            return; //error prevention
+        }
+
         //number of bezier segments 
-        int segments = points.Length - 1;
+        int segments = connector ? points.Length : points.Length - 1;  //connector
 
         //draw the bezier segments
         for (int i = 0; i < segments; i++)
         {
+            int nextIndex = (i + 1) % points.Length;  //connector
+
             Vector3 A = points[i].GetComponent<BezierPoint>().getAnchor();
             Vector3 B = points[i].GetComponent<BezierPoint>().getControl2();
-            Vector3 C = points[i+1].GetComponent<BezierPoint>().getControl1();
-            Vector3 D = points[i+1].GetComponent<BezierPoint>().getAnchor();
+            Vector3 C = points[nextIndex].GetComponent<BezierPoint>().getControl1();
+            Vector3 D = points[nextIndex].GetComponent<BezierPoint>().getAnchor(); //3 + 1 % points-lenght(aka 4) = 0 -> to the loop beginning  //connector
 
             Handles.DrawBezier(A, D, B, C, Color.white, null, 3f);
         }
 
         int segment = getSegment(); 
-        if (segment == segments)  //t=1, segment should be segment-1
+        if (segment >= segments)  //t=1, segment should be segment-1
         {
-            segment--;
+            segment = segments - 1;  //connector
         }
 
         //the value of t on the current segment
         float myTvalue = adjustTvalue(segment);
 
+        int nextSegment = (segment + 1) % points.Length;   //connector
 
         //get the points
         Vector3 Apoint = points[segment].GetComponent<BezierPoint>().getAnchor();
         Vector3 Bpoint = points[segment].GetComponent<BezierPoint>().getControl2();
-        Vector3 Cpoint = points[segment + 1].GetComponent<BezierPoint>().getControl1();
-        Vector3 Dpoint = points[segment + 1].GetComponent<BezierPoint>().getAnchor();
+        Vector3 Cpoint = points[nextSegment].GetComponent<BezierPoint>().getControl1();  //connector
+        Vector3 Dpoint = points[nextSegment].GetComponent<BezierPoint>().getAnchor();
 
         Vector3 bezPoint = getBezierPoint(Apoint, Bpoint, Cpoint, Dpoint, myTvalue);
 

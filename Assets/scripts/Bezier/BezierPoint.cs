@@ -47,24 +47,53 @@ public class BezierPoint : MonoBehaviour
         }
     }
 
+    //!!!!-----IM SORRY FOR THE COMMENTS IT HELPS ME LEARN AND REMEMBER (kind of unreadable though)-----!!!!
+
     //for dragging the controls
 
+    //custom editor instead of default one
     [CustomEditor(typeof(BezierPoint))]
     public class BezierPointEditor : Editor
     {
-        private void OnSceneGUI()
+        //overriding editor's own OnSceneGUI?, gizmos,editor
+        private void OnSceneGUI()               
         {
-            
+            BezierPoint bezierPoint = (BezierPoint)target;  //->ref to object currently shown in editor
 
-            EditorGUI.BeginChangeCheck();
+            EditorGUI.BeginChangeCheck();  //monitors changes to any values within the editor
 
-            
+            Vector3 newAnchorPos = Handles.PositionHandle(bezierPoint.transform.position, Quaternion.identity);  //handle in point's current pos, movable in 3D space
 
-            if (EditorGUI.EndChangeCheck())
+            if (EditorGUI.EndChangeCheck())  //checks if any changes were made during the last interaction (anchor), if so ->
             {
-               
+                Vector3 direction = bezierPoint.control1.transform.position - bezierPoint.transform.position;  //calc. vector between anchor and control
+                bezierPoint.transform.position = newAnchorPos;  //new anchor pos based on movement
+                bezierPoint.control1.transform.position = bezierPoint.transform.position + direction;  //maintains position with anchor
+
+                direction = bezierPoint.control2.transform.position - bezierPoint.transform.position;  //calc. vec. between ctrl2 and anc.
+                bezierPoint.control2.transform.position = bezierPoint.transform.position - direction;  //maintains position with anchor but opposite dir
             }
 
+            EditorGUI.BeginChangeCheck();  //changes to control 1
+            Vector3 newControl1Position = Handles.PositionHandle(bezierPoint.control1.transform.position, Quaternion.identity);
+
+            if (EditorGUI.EndChangeCheck())  //was ctrl1 moved?
+            {
+                Vector3 control1ToAnchor = bezierPoint.control1.transform.position - bezierPoint.transform.position;  //direction from 1 to anc
+                bezierPoint.control1.transform.position = newControl1Position;
+                bezierPoint.control2.transform.position = bezierPoint.transform.position - control1ToAnchor;  //moves ctrl2 ro maintain relative position (opposite)
+            }
+
+            EditorGUI.BeginChangeCheck();  //changes to control 2
+            Vector3 newControl2Position = Handles.PositionHandle(bezierPoint.control2.transform.position, Quaternion.identity);
+
+            if (EditorGUI.EndChangeCheck())  //was ctrl2 moved?
+            {
+                Vector3 control2ToAnchor = bezierPoint.control2.transform.position - bezierPoint.transform.position;
+                bezierPoint.control2.transform.position = newControl2Position;
+                bezierPoint.control1.transform.position = bezierPoint.transform.position - control2ToAnchor;
+            }
         }
+        
     }
 }

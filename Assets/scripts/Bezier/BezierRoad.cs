@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 
@@ -19,6 +20,8 @@ public class BezierRoad : MonoBehaviour
 
     [Range(0, 500)]
     public int roadSegments = 100;  //FOR HOMEWORK FRAMES(2D CUT SEGMENTS)
+
+    public bool SpheresON = false;
 
 
 
@@ -61,6 +64,8 @@ public class BezierRoad : MonoBehaviour
         return (Q - P).normalized;
     }
 
+
+
     private void OnDrawGizmos()
     {
         if (points == null || points.Length < 2)
@@ -80,6 +85,8 @@ public class BezierRoad : MonoBehaviour
 
             Handles.DrawBezier(A, D, B, C, Color.white, null, 2f);
         }
+
+        //FOR THE BALLLLLL
 
         int segment = getSegment();
         if (segment >= segments)  //t=1, segment should be segment-1
@@ -101,34 +108,90 @@ public class BezierRoad : MonoBehaviour
         Vector3 bezPoint = getBezierPoint(Apoint, Bpoint, Cpoint, Dpoint, myTvalue);
 
         Gizmos.color = Color.red;
-        Gizmos.DrawSphere(bezPoint, 0.5f);
+        Gizmos.DrawSphere(bezPoint, 3f);
 
-        //get the forward vector
-        Vector3 forw = getBezierForwardVector(Apoint, Bpoint, Cpoint, Dpoint, myTvalue);
-        MyDraw.DrawVectorAt(bezPoint, 30.0f * forw, Color.blue, 5.0f);
+        ///END THE BALLLL
+        
 
-        //get vector3.up to get thr "right vector2
-        Vector3 right = Vector3.Cross(Vector3.up, forw);
-        MyDraw.DrawVectorAt(bezPoint, 30f * right, Color.red, 3f);
 
-        //use the forward vector and "right" to get correct "up" vector
-        Vector3 up = Vector3.Cross(forw, right);
-        MyDraw.DrawVectorAt(bezPoint, 30f * up, Color.green, 3f);
-
-        //draw the points using the cross section of the road
-        for (int i = 0; i < crossSection.vertices.Length; i++)
+        Vector3?[] previousRoadPoint = new Vector3?[crossSection.vertices.Length]; //connecting
+        for (int i = 0; i < previousRoadPoint.Length; i++)
         {
-            //2d point x-coord times right vector + y-coord times up vector
-            Vector3 point = crossSection.vertices[i].point.x * right + crossSection.vertices[i].point.y * up;
-
-            //add bezier point to the above
-            point += bezPoint;
-
-            Gizmos.color = Color.white;
-            Gizmos.DrawSphere(point, 0.5f);
+            previousRoadPoint[i] = null;
         }
 
+        bool isFirstSegment = true;
 
+        for (int i = 0; i < segments; i++ )
+        {
+            int segmentsPerBezier = roadSegments / segments;
+
+            for (int j = 0; j <= segmentsPerBezier; j++)
+            {
+                float _segmentT = (float)j / (float)segmentsPerBezier;
+
+                int nextIndex = (i + 1) % points.Length;
+
+                Vector3 _Apoint = points[i].GetComponent<BezierPoint>().getAnchor();
+                Vector3 _Bpoint = points[i].GetComponent<BezierPoint>().getControl2();
+                Vector3 _Cpoint = points[nextIndex].GetComponent<BezierPoint>().getControl1();  //connector
+                Vector3 _Dpoint = points[nextIndex].GetComponent<BezierPoint>().getAnchor();
+
+                //get bezpoint here
+                Vector3 _bezPoint = getBezierPoint(_Apoint, _Bpoint, _Cpoint, _Dpoint, _segmentT);
+
+                //get forward, right and up vectors here 
+
+                //get the forward vector
+                Vector3 forw = getBezierForwardVector(_Apoint, _Bpoint, _Cpoint, _Dpoint, _segmentT);
+                //MyDraw.DrawVectorAt(bezPoint, 30.0f * forw, Color.blue, 5.0f);
+
+                //get vector3.up to get the "right vector2
+                Vector3 right = Vector3.Cross(Vector3.up, forw);
+                //MyDraw.DrawVectorAt(bezPoint, 30f * right, Color.red, 3f);
+
+                //use the forward vector and "right" to get correct "up" vector
+                Vector3 up = Vector3.Cross(forw, right);
+                //MyDraw.DrawVectorAt(bezPoint, 30f * up, Color.green, 3f);
+
+
+                Vector3[] roadPoints = new Vector3[crossSection.vertices.Length]; //place to hold the point locations?
+                for (int k = 0; k < crossSection.vertices.Length; k++)
+                {
+                    //2d point x-coord times right vector + y-coord times up vector
+                    Vector3 point = crossSection.vertices[k].point.x * right + crossSection.vertices[k].point.y * up;
+
+                    //add bezier point to the above
+                    point += _bezPoint;
+
+                    if (SpheresON == true)
+                    {
+                        Gizmos.color = Color.white;
+                        Gizmos.DrawSphere(point, 0.5f);
+                    }
+
+                    roadPoints[k] = point; //store the roadpoint?
+                }
+
+                for (int k = 0; k < roadPoints.Length - 1; k++)
+                {
+                    Gizmos.color = Color.white;
+                    Gizmos.DrawLine(roadPoints[k], roadPoints[k + 1]);
+
+                    if (previousRoadPoint[k] != null)
+                    Gizmos.DrawLine(roadPoints[k], (Vector3)previousRoadPoint[k]);
+                    previousRoadPoint[k] = roadPoints[k];
+                }
+                Gizmos.DrawLine(roadPoints[roadPoints.Length - 1], roadPoints[0]);
+
+                if (!isFirstSegment)
+                {
+                    Gizmos.DrawLine(roadPoints[roadPoints.Length - 1], (Vector3)previousRoadPoint[roadPoints.Length - 1]);
+                    previousRoadPoint[roadPoints.Length - 1] = roadPoints[roadPoints.Length - 1];
+                }
+
+            }
+        }
     }
 
     // Start is called before the first frame update
@@ -142,4 +205,5 @@ public class BezierRoad : MonoBehaviour
     {
 
     }
+
 }

@@ -147,7 +147,7 @@ Transform:
   m_GameObject: {fileID: 117116589}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 38.811096, y: 6.019478, z: 0}
+  m_LocalPosition: {x: 38.811096, y: 6.019478, z: 47.10051}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -163,6 +163,8 @@ GameObject:
   m_Component:
   - component: {fileID: 198605242}
   - component: {fileID: 198605243}
+  - component: {fileID: 198605245}
+  - component: {fileID: 198605244}
   m_Layer: 0
   m_Name: BezierRoad
   m_TagString: Untagged
@@ -208,9 +210,61 @@ MonoBehaviour:
   - {fileID: 1588599562}
   crossSection: {fileID: 11400000, guid: 9e9bf7a634b472748a7d69186dfcebc6, type: 2}
   connector: 1
-  t: 0
+  t: 0.67
   roadSegments: 146
   SpheresON: 0
+  LinesON: 1
+  roadScaler: 1
+--- !u!33 &198605244
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198605241}
+  m_Mesh: {fileID: 0}
+--- !u!23 &198605245
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198605241}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &627932764
 GameObject:
   m_ObjectHideFlags: 0
@@ -808,7 +862,7 @@ Transform:
   m_GameObject: {fileID: 2034411963}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -38.811096, y: -5.7243347, z: 0}
+  m_LocalPosition: {x: -38.811096, y: -6.019478, z: -46.729843}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -74,147 +74,106 @@ public class BezierRoad : MonoBehaviour
 
 
     //-----------------------------------------------------------------------------------------------------
-    // NOT WORKING FROM HERE ON ***************************************************************************
+    // The road mesh ***************************************************************************
     //-----------------------------------------------------------------------------------------------------
-    void GenerateRoadMesh()  
+    void GenerateRoadMesh()
     {
         if (mesh == null)
-        {
             mesh = new Mesh();
-        }
-        else { mesh.Clear(); }
+        else
+            mesh.Clear();
 
-        //vertices
         List<Vector3> vertices = new List<Vector3>();
-
-        //triangles
         List<int> triangles = new List<int>();
 
-
-
-
-        //********go trough whole road and generate the vertices**********
-
-        //number of segments
         int segmentsPerBezier = roadSegments / segments;
 
-        Vector3?[] previousRoadPoint = new Vector3?[crossSection.vertices.Length]; //connecting
-        for (int i = 0; i < previousRoadPoint.Length; i++)
-        {
-            previousRoadPoint[i] = null;
-        }
+        //store previous road cross-section
+        Vector3[] prevRoadPoints = null;
 
         for (int i = 0; i < segments; i++)
         {
-            //int segmentsPerBezier = roadSegments / segments;
+            int nextIndex = (i + 1) % points.Length; //looping back
+
+            Vector3 _Apoint = points[i].GetComponent<BezierPoint>().getAnchor();
+            Vector3 _Bpoint = points[i].GetComponent<BezierPoint>().getControl2();
+            Vector3 _Cpoint = points[nextIndex].GetComponent<BezierPoint>().getControl1();
+            Vector3 _Dpoint = points[nextIndex].GetComponent<BezierPoint>().getAnchor();
 
             for (int j = 0; j <= segmentsPerBezier; j++)
             {
-                float _segmentT = (float)j / (float)segmentsPerBezier;
+                float t = (float)j / segmentsPerBezier;
+                Vector3 bezPoint = getBezierPoint(_Apoint, _Bpoint, _Cpoint, _Dpoint, t);
+                Vector3 forw = getBezierForwardVector(_Apoint, _Bpoint, _Cpoint, _Dpoint, t);
 
-                int nextIndex = (i + 1) % points.Length;
+                Vector3 right = Vector3.Cross(Vector3.up, forw).normalized;
+                Vector3 up = Vector3.Cross(forw, right).normalized;
 
-                Vector3 _Apoint = points[i].GetComponent<BezierPoint>().getAnchor();
-                Vector3 _Bpoint = points[i].GetComponent<BezierPoint>().getControl2();
-                Vector3 _Cpoint = points[nextIndex].GetComponent<BezierPoint>().getControl1();  //connector
-                Vector3 _Dpoint = points[nextIndex].GetComponent<BezierPoint>().getAnchor();
+                Vector3[] roadPoints = new Vector3[crossSection.vertices.Length];
 
-                //get bezpoint here
-                Vector3 _bezPoint = getBezierPoint(_Apoint, _Bpoint, _Cpoint, _Dpoint, _segmentT);
-
-                //***direction points***
-                Vector3 forw = getBezierForwardVector(_Apoint, _Bpoint, _Cpoint, _Dpoint, _segmentT); //get the forward vector
-
-                Vector3 right = Vector3.Cross(Vector3.up, forw); //get vector3.up to get the "right vector2
-
-                Vector3 up = Vector3.Cross(forw, right); //use the forward vector and "right" to get correct "up" vector
-
-
-                Vector3[] roadPoints = new Vector3[crossSection.vertices.Length]; //place to hold the point locations?
                 for (int k = 0; k < crossSection.vertices.Length; k++)
                 {
-                    //2d point x-coord times right vector + y-coord times up vector
                     Vector3 point = crossSection.vertices[k].point.x * right + crossSection.vertices[k].point.y * up;
-
                     point *= roadScaler;
+                    point += bezPoint;
 
-                    //add bezier point to the above
-                    point += _bezPoint;
-
-                    roadPoints[k] = point; //store the roadpoint?
-
+                    roadPoints[k] = point;
                     vertices.Add(point);
                 }
 
-                for (int k = 0; k < roadPoints.Length - 1; k++)
+                //connect current roadPoints to previousRoadPoints with triangles
+                if (prevRoadPoints != null)
                 {
-                    previousRoadPoint[k] = roadPoints[k];
+                    for (int k = 0; k < roadPoints.Length - 1; k++)
+                    {
+                        int baseIndex = vertices.Count - crossSection.vertices.Length;
+                        int upperLeft = baseIndex + k;
+                        int upperRight = upperLeft + 1;
+                        int lowerLeft = upperLeft - crossSection.vertices.Length;
+                        int lowerRight = upperRight - crossSection.vertices.Length;
 
+                        //triangle 1
+                        triangles.Add(lowerLeft);
+                        triangles.Add(upperLeft);
+                        triangles.Add(upperRight);
+
+                        //triangle 2
+                        triangles.Add(lowerLeft);
+                        triangles.Add(upperRight);
+                        triangles.Add(lowerRight);
+                    }
+
+                    //closing
+                    int prevLast = vertices.Count - 1;
+                    int prevFirst = prevLast - (crossSection.vertices.Length - 1);
+                    int last = prevLast - crossSection.vertices.Length;
+                    int first = last - (crossSection.vertices.Length - 1);
+
+                    triangles.Add(last);
+                    triangles.Add(prevLast);
+                    triangles.Add(prevFirst);
+
+                    triangles.Add(last);
+                    triangles.Add(prevFirst);
+                    triangles.Add(first);
                 }
 
-                previousRoadPoint[roadPoints.Length - 1] = roadPoints[roadPoints.Length - 1];
-
+                prevRoadPoints = roadPoints;
             }
-        }
-  
-        //*********go trough the vertices and generate triangles*********
-  
-
-        for (int roadSeg = 0; roadSeg < roadSegments - 1;  roadSeg++)
-        {
-            int baseIndex = roadSeg * crossSection.vertices.Length;
-            int lowerLeft, upperLeft, lowerRight, upperRight;
-
-            //loop trough every other vertex
-            for (int i = 1;  i < crossSection.vertices.Length - 1; i += 2)
-            {
-                lowerLeft = i + baseIndex;
-                lowerRight = lowerLeft + 1;
-
-                upperLeft = lowerLeft + crossSection.vertices.Length;
-                upperRight = upperLeft + 1;
-
-                //1st triangle
-                triangles.Add(lowerLeft);
-                triangles.Add(upperLeft);
-                triangles.Add(upperRight);
-
-                //2nd triangle
-                triangles.Add(lowerLeft);
-                triangles.Add(upperRight);
-                triangles.Add(lowerRight);
-                
-            }
-
-            //handle last bit here
-            lowerLeft = baseIndex + crossSection.vertices.Length - 1;
-            lowerRight = baseIndex;
-
-            upperLeft = lowerLeft + crossSection.vertices.Length;
-            upperRight = lowerRight + crossSection.vertices.Length;
-
-            triangles.Add(lowerLeft);
-            triangles.Add(upperLeft);
-            triangles.Add(upperRight);
-
-            //2nd triangle
-            triangles.Add(lowerLeft);
-            triangles.Add(upperRight);
-            triangles.Add(lowerRight);
         }
 
         mesh.SetVertices(vertices);
         mesh.SetTriangles(triangles, 0);
-        mesh.RecalculateNormals();  
-
+        mesh.RecalculateNormals();
     }
+
 
 
 
     private void OnDrawGizmos()
     {
-        //GenerateRoadMesh();
-        //GetComponent<MeshFilter>().sharedMesh = mesh;
+        GenerateRoadMesh();
+        GetComponent<MeshFilter>().sharedMesh = mesh;
 
         if (points == null || points.Length < 2)
         {

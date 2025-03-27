@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
+[RequireComponent(typeof(MeshRenderer))]
+
 public class MeshGenerator : MonoBehaviour
 {
     Mesh mesh;
@@ -14,18 +16,32 @@ public class MeshGenerator : MonoBehaviour
     public int zSize = 20;
     public float yHeight = 2f;
     public float perlinScaler = 0.7f;
+
+    public bool treshold = false;
+
+    public List<NoiseSettings> noiseSettings = new List<NoiseSettings>();  //layers
    
     void Start()
     {
-        mesh = new Mesh();
-        GetComponent<MeshFilter>().mesh = mesh;
+        //mesh = new Mesh();
+        //GetComponent<MeshFilter>().mesh = mesh;
 
         CreateShape();
-        UpdateMesh();
+        //UpdateMesh();
     }
 
     void CreateShape()
     {
+        if (mesh == null)
+        {
+            mesh = new Mesh();
+            mesh.name = "Terrain Mesh";
+        }
+        else
+        {
+            mesh.Clear();
+        }
+
         vertices = new Vector3[(xSize + 1) * (zSize + 1)];
 
         for (int i = 0, z = 0; z <= zSize; z++)
@@ -59,17 +75,25 @@ public class MeshGenerator : MonoBehaviour
             }
             vert++;
         }
+
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
+
+        GetComponent<MeshFilter>().mesh = mesh;
     }
 
     void UpdateMesh()
     {
-        mesh.Clear();
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
+        //mesh.Clear();
+        //mesh.vertices = vertices;
+        //mesh.triangles = triangles;
     }
 
     private void OnDrawGizmos()
     {
+
+        CreateShape();
+
         if (vertices == null) return;
 
         for (int i = 0; i < vertices.Length; i++)

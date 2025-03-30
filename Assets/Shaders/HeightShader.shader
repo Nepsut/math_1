@@ -7,11 +7,11 @@ Shader "Unlit/HeightShader"
         _SnowTex ("Snow Texture", 2D) = "white" {}
         _WaterTex ("Water Texture", 2D) = "white" {}
 
-        _SnowHeight ("Snow Height", Range(0.0, 50.0)) = .0
-        _WaterHeight ("Water Height", Range(0.0, 20.0)) = 10.0
-        _MountainHeight ("Mountain Height", Range(0.0, 50.0)) = 10.0
+        _SnowHeight ("Snow Height", Range(0.0, 10.0)) = .0
+        _MountainHeight ("Mountain Height", Range(0.0, 10.0)) = 10.0
+        _WaterHeight ("Water Height", Range(0.0, 10.0)) = 10.0
 
-        _BlendDistance ("Blend Distance", Range(0.0, 100.0)) = 20.0
+        _BlendDistance ("Blend Distance", Range(0.0, 10.0)) = 10.0
 
     }
     SubShader
@@ -94,7 +94,7 @@ Shader "Unlit/HeightShader"
                     t = heightblend(i.height, _SnowHeight);
                     col = (1-t)*col_rock + t*col_snow;
                 }
-                else if (i.height.y > _MountainHeight ) {
+                else if (i.height.y > _MountainHeight) {
 
                     col = col_rock;
                     //col = fixed4(.3,.2,.0,1);

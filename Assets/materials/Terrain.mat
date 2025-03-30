@@ -73,7 +73,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BlendDistance: 3.1
+    - _BlendDistance: 2.04
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -87,7 +87,7 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
-    - _SnowHeight: 10
+    - _SnowHeight: 7.29
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0

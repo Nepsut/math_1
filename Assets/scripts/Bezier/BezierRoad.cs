@@ -86,6 +86,8 @@ public class BezierRoad : MonoBehaviour
         List<Vector3> vertices = new List<Vector3>();
         List<int> triangles = new List<int>();
 
+        List<Vector2> uvs = new();
+
         int segmentsPerBezier = roadSegments / segments;
 
         //store previous road cross-section
@@ -118,6 +120,7 @@ public class BezierRoad : MonoBehaviour
                     point += bezPoint;
 
                     roadPoints[k] = point;
+                    uvs.Add(new Vector2(crossSection.vertices[k].u.x, t));
                     vertices.Add(point);
                 }
 
@@ -164,6 +167,7 @@ public class BezierRoad : MonoBehaviour
 
         mesh.SetVertices(vertices);
         mesh.SetTriangles(triangles, 0);
+        mesh.SetUVs(0, uvs);
         mesh.RecalculateNormals();
     }
 
@@ -295,7 +299,7 @@ public class BezierRoad : MonoBehaviour
                     }
                     
                 }
-                Gizmos.DrawLine(roadPoints[roadPoints.Length - 1], roadPoints[0]);
+                //Gizmos.DrawLine(roadPoints[roadPoints.Length - 1], roadPoints[0]);
 
                 if (!isFirstSegment && LinesON)
                 {

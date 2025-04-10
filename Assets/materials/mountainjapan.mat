@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Terrain
+  m_Name: mountainjapan
   m_Shader: {fileID: 4800000, guid: dbbe8b6c8052a3447b24304f1e712526, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -44,7 +44,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: f496137ae8e641c44bec5bde27eb2205, type: 3}
+        m_Texture: {fileID: 2800000, guid: bee6b9fd5caf6274bb5989b11ddad9b9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -52,7 +52,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MountainTex:
-        m_Texture: {fileID: 2800000, guid: f496137ae8e641c44bec5bde27eb2205, type: 3}
+        m_Texture: {fileID: 2800000, guid: 1493a8196d5b20941a5b7eb6ee7981f6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -68,12 +68,12 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _WaterTex:
-        m_Texture: {fileID: 2800000, guid: 32102c6120233e345a628505bf699646, type: 3}
+        m_Texture: {fileID: 2800000, guid: bee6b9fd5caf6274bb5989b11ddad9b9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BlendDistance: 3.64
+    - _BlendDistance: 4.89
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1

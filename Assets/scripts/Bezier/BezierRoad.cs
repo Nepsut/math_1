@@ -1,8 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
+using UnityEngine.Rendering;
 
 public class BezierRoad : MonoBehaviour
 {
@@ -25,18 +28,48 @@ public class BezierRoad : MonoBehaviour
 
     public bool LinesON = false;
 
+    public bool BezierLinesON = false;
+
     [Range(0f, 10f)]
     public float roadScaler = 1.0f;
 
     //our mesh
     private Mesh mesh;
 
+    //the car
+    [SerializeField] private Transform car;
+    [SerializeField] private float lapTime = 6.0f;
+    private float timer = 0.0f;
+    
 
-
-
-    private int getSegment()
+    // Update is called once per frame
+    void Update()
     {
-        return Mathf.FloorToInt(segments * t) < segments ? Mathf.FloorToInt(segments * t) : segments - 1;
+        //-----------------------------------------------------------------------------------------------------
+        // work in progress ***************************************************************************
+        //-----------------------------------------------------------------------------------------------------
+
+        //timer += Time.deltaTime;
+        //float tempT = timer/lapTime;
+
+        //if (timer > lapTime) timer = 0.0f;
+
+        //float carT = adjustTvalue(getSegment(tempT));
+
+        //Vector3 _Apoint = points[getSegment(carT)].GetComponent<BezierPoint>().getAnchor();
+        //Vector3 _Bpoint = points[getSegment(carT)].GetComponent<BezierPoint>().getControl2();
+        //int nextSeg = getSegment(carT) + 1;
+        //if (nextSeg > segments) nextSeg = 0;
+        //Vector3 _Cpoint = points[nextSeg].GetComponent<BezierPoint>().getControl1();
+        //Vector3 _Dpoint = points[nextSeg].GetComponent<BezierPoint>().getAnchor();
+
+        //car.position = getBezierPoint(_Apoint, _Bpoint, _Cpoint, _Dpoint, carT);
+        //car.forward = getBezierForwardVector(_Apoint, _Bpoint, _Cpoint, _Dpoint, carT);
+    }
+
+    private int getSegment(float _t)
+    {
+        return Mathf.FloorToInt(segments * _t) < segments ? Mathf.FloorToInt(segments * _t) : segments - 1;
     }
 
     private float adjustTvalue(int segment)
@@ -194,12 +227,17 @@ public class BezierRoad : MonoBehaviour
             Vector3 C = points[nextIndex].GetComponent<BezierPoint>().getControl1();
             Vector3 D = points[nextIndex].GetComponent<BezierPoint>().getAnchor(); //3 + 1 % points-lenght(aka 4) = 0 -> to the loop beginning  //connector
 
-            Handles.DrawBezier(A, D, B, C, Color.blue, null, 2f);
+            if (BezierLinesON)
+            {
+                Handles.DrawBezier(A, D, B, C, Color.blue, null, 2f);
+            }
         }
 
-        //FOR THE BALLLLLL
+        //-----------------------------------------------------------------------------------------------------
+        // THE BALL ***************************************************************************
+        //-----------------------------------------------------------------------------------------------------
 
-        int segment = getSegment();
+        int segment = getSegment(t);
         if (segment >= segments)  //t=1, segment should be segment-1
         {
             segment = segments - 1;  //connector
@@ -310,18 +348,4 @@ public class BezierRoad : MonoBehaviour
             }
         }
     }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        //GenerateRoadMesh();
-        //GetComponent<MeshFilter>().sharedMesh = mesh;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
 }

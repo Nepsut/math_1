@@ -7,7 +7,7 @@ Shader "Unlit/HeightShader"
         _SnowTex ("Snow Texture", 2D) = "white" {}
         _WaterTex ("Water Texture", 2D) = "white" {}
 
-        _SnowHeight ("Snow Height", Range(0.0, 10.0)) = .0
+        _SnowHeight ("Snow Height", Range(0.0, 50.0)) = .0
         _MountainHeight ("Mountain Height", Range(0.0, 10.0)) = 10.0
         _WaterHeight ("Water Height", Range(0.0, 10.0)) = 10.0
 

@@ -49,22 +49,29 @@ public class BezierRoad : MonoBehaviour
         // work in progress ***************************************************************************
         //-----------------------------------------------------------------------------------------------------
 
-        //timer += Time.deltaTime;
-        //float tempT = timer/lapTime;
+        //own function and just a call?
 
-        //if (timer > lapTime) timer = 0.0f;
+        timer += Time.deltaTime;
+        float tempT = timer / lapTime;
 
-        //float carT = adjustTvalue(getSegment(tempT));
+        if (timer > lapTime) timer = 0.0f; //reset timer for looping
 
-        //Vector3 _Apoint = points[getSegment(carT)].GetComponent<BezierPoint>().getAnchor();
-        //Vector3 _Bpoint = points[getSegment(carT)].GetComponent<BezierPoint>().getControl2();
-        //int nextSeg = getSegment(carT) + 1;
-        //if (nextSeg > segments) nextSeg = 0;
-        //Vector3 _Cpoint = points[nextSeg].GetComponent<BezierPoint>().getControl1();
-        //Vector3 _Dpoint = points[nextSeg].GetComponent<BezierPoint>().getAnchor();
+        int currentSegment = getSegment(tempT);
+        float segmentT = (tempT - ((float)currentSegment / segments)) * segments;
 
-        //car.position = getBezierPoint(_Apoint, _Bpoint, _Cpoint, _Dpoint, carT);
-        //car.forward = getBezierForwardVector(_Apoint, _Bpoint, _Cpoint, _Dpoint, carT);
+        int nextSegment = (currentSegment + 1) % points.Length;
+        Vector3 A = points[currentSegment].GetComponent<BezierPoint>().getAnchor();
+        Vector3 B = points[currentSegment].GetComponent<BezierPoint>().getControl2();
+        Vector3 C = points[nextSegment].GetComponent<BezierPoint>().getControl1();
+        Vector3 D = points[nextSegment].GetComponent<BezierPoint>().getAnchor();
+
+        //get the position and forward vector for the car along the curve
+        Vector3 carPosition = getBezierPoint(A, B, C, D, segmentT);
+        Vector3 carForward = getBezierForwardVector(A, B, C, D, segmentT);
+
+        //update car position and rotation
+        car.position = carPosition;
+        car.forward = carForward;
     }
 
     private int getSegment(float _t)

@@ -38,7 +38,7 @@ public class BezierRoad : MonoBehaviour
 
     //the car
     [SerializeField] private Transform car;
-    [SerializeField] private float lapTime = 6.0f;
+    [SerializeField] private float lapTime = 12.0f;
     private float timer = 0.0f;
     
 

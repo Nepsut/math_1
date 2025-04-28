@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.Rendering;
 
 public class LightTrigger : MonoBehaviour
 {
-    //modify at the end
     [Range(0.1f, 35f)]
     public float radius = 0.5f;
 
@@ -21,6 +21,12 @@ public class LightTrigger : MonoBehaviour
 
     public float offPos = 5.0f;
 
+    private Light lamp;
+
+    private void Start()
+    {
+        lamp = GetComponentInChildren<Light>();
+    }
 
     private void OnDrawGizmos()
     {
@@ -58,11 +64,10 @@ public class LightTrigger : MonoBehaviour
         if (v.magnitude <= radius && angle < threshold && offsetTriggerPosUp.y > vecTargetPos.y && offsetTriggerPosDown.y < vecTargetPos.y)
         {
             Handles.color = Color.red;
-            //gameObject.GetComponentInChildren<Light>().enabled = false;
+
+            lamp.enabled = false;
+
             StartCoroutine(WaitForSeconds());
-            //gameObject.GetComponentInChildren<Light>().enabled = true;
-
-
         }
         else Handles.color = Color.white;
 
@@ -80,13 +85,11 @@ public class LightTrigger : MonoBehaviour
 
     IEnumerator WaitForSeconds()
     {
-        gameObject.GetComponentInChildren<Light>().enabled = false;
-
         Debug.Log("Started Coroutine at timestamp : " + Time.time);
 
         yield return new WaitForSeconds(2);
 
-        gameObject.GetComponentInChildren<Light>().enabled = true;
+        lamp.enabled = true;
 
         Debug.Log("Finished Coroutine at timestamp : " + Time.time);
     }

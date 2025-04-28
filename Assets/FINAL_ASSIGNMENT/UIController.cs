@@ -1,45 +1,89 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
+    //FADE
+
     [Range(0f, 1f)]
-    public float t = 0.0f;
+    public float t = 0.0f; //progress of the fade (0 = invisible, 1 = fully visible)
 
-    public GameObject fadeInPanel;
-    public float fadeTime = 2.0f;
+    public Image fadeInImage; 
+    public float fadeTime = 2.0f; 
 
-    public EasingFunction.Ease fadeEase = EasingFunction.Ease.EaseInOutQuad;
+    public EasingFunction.Ease fadeEase = EasingFunction.Ease.EaseInOutQuad; //easing function
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private bool isFading = false; //track whether the fade has started
 
-    // Update is called once per frame
+    //CAMERA
+    public GameObject mainCamera;
+    public GameObject carCamera;
+    public int camManager;
+
     void Update()
     {
-        
+        if (isFading)
+        {
+            Fade();
+        }
+    }
+
+    void StartFade()
+    {
+        isFading = true;
+        t = 0f;
     }
 
     void Fade()
     {
-        //FADE IN PANEL COLOR WHEN CHANGING CAMERA
+        t += Time.deltaTime / fadeTime;
 
-        //t = Time.time / fadeTime;
+        //ensure t stays between 0 and 1
+        if (t > 1f)
+        {
+            t = 1f;
+            isFading = false; //stop fading once we've reached full visibility
+        }
 
-        //if (t > 1f) t = 1f;
-        //EasingFunction.Function fadeFunc = EasingFunction.GetEasingFunction(fadeEase);
-        //t = fadeFunc(0, 1, t);
+        EasingFunction.Function fadeFunc = EasingFunction.GetEasingFunction(fadeEase);
+        float easedT = fadeFunc(1, 0, t); //apply easing to t
 
-        //Color currentColor = fadeInPanel.GetComponent<Image>().color;
-        //currentColor.a = Mathf.Lerp(0, 1, t); //interpolate alpha from 0 to 1
-        //fadeInPanel.color = currentColor;
+        Color currentColor = fadeInImage.color;
+        currentColor.a = easedT;
+        fadeInImage.color = currentColor;
+    }
 
-        //float scaler = Mathf.Lerp(0.5f, 1.0f, t);
-        //fadeInPanel.transform.localScale = new Vector3(scaler, scaler, 1f);
+    public void CameraButtonClick()
+    {
+        StartFade();
+        ManageCamera();
+    }
+
+    public void ManageCamera()
+    {
+        if (camManager == 0)
+        {
+            camM();
+            camManager = 1;
+        }
+        else
+        {
+            camC();
+            camManager = 0;
+        }
+    }
+
+    void camM()
+    {
+        mainCamera.SetActive(true);
+        carCamera.SetActive(false);
+    }
+    void camC()
+    {
+        mainCamera.SetActive(false);
+        carCamera.SetActive(true);
     }
 }
+
